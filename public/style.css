@@ -1,193 +1,163 @@
-/* Modern Dark Theme - CodeAssist Web */
-
+/* 🌙 Modern Dark Theme - CodeAssist Web */
 :root {
-  --bg-primary: #1e1e2e;
-  --bg-secondary: #282a36;
-  --bg-tertiary: #313244;
-  --text-primary: #f8f8f2;
-  --text-secondary: #a6adc8;
-  --accent: #89b4fa;
-  --accent-hover: #74c7ec;
-  --danger: #f38ba8;
-  --success: #a6e3a1;
-  --border: #313244;
-  --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  --bg-primary: #181a1b;
+  --bg-secondary: #22252a;
+  --bg-tertiary: #2b2e33;
+  --text-primary: #e4e4e4;
+  --text-secondary: #b0b0b0;
+  --accent: #60a5fa;
+  --accent-hover: #3b82f6;
+  --danger: #ef4444;
+  --success: #22c55e;
+  --border: #30363d;
+  --shadow: 0 5px 12px rgba(0, 0, 0, 0.25);
 }
 
 body, html {
   margin: 0;
   padding: 0;
   height: 100%;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   background-color: var(--bg-primary);
   color: var(--text-primary);
+  overflow: hidden;
 }
 
-/* Main Layout */
+/* 🏗️ Layout */
 .container {
   display: flex;
   height: 100vh;
+  overflow: hidden;
 }
 
-/* Sidebar Styling */
+/* 📌 Sidebar */
 .sidebar {
-  width: 360px;
+  width: 340px;
   background-color: var(--bg-secondary);
   border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow-y: auto;
   box-shadow: var(--shadow);
+  transition: width 0.3s ease;
 }
 
 .sidebar-header {
-  padding: 16px;
+  padding: 20px;
   background-color: var(--bg-tertiary);
   border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
-}
-
-.sidebar-header h2 {
-  margin: 0;
   font-size: 20px;
   font-weight: 600;
   color: var(--accent);
 }
 
+/* 🎛️ AI Controls */
 .ai-controls {
-  padding: 16px;
+  padding: 20px;
   border-bottom: 1px solid var(--border);
 }
 
 .ai-controls h3 {
   margin-top: 0;
-  margin-bottom: 16px;
   font-size: 18px;
   font-weight: 500;
   color: var(--text-primary);
 }
 
-.api-key-container {
-  margin-bottom: 16px;
-}
-
-.api-key-container label {
-  display: block;
-  margin-bottom: 8px;
-  font-size: 14px;
-  color: var(--text-secondary);
-}
-
+/* 🔑 API Key Input */
 .api-key-container input {
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   background-color: var(--bg-tertiary);
   color: var(--text-primary);
   border: 1px solid var(--border);
   border-radius: 6px;
   font-size: 14px;
-  transition: all 0.2s ease;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
 }
 
 .api-key-container input:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 2px rgba(137, 180, 250, 0.25);
+  box-shadow: 0 0 8px rgba(96, 165, 250, 0.4);
 }
 
-.api-key-container small {
-  display: block;
-  margin-top: 4px;
-  font-size: 11px;
-  color: var(--text-secondary);
-}
-
+/* 🎤 AI Prompt */
 #ai-prompt {
   width: 100%;
-  height: 180px; /* Increased height */
+  height: 140px;
   padding: 12px;
   background-color: var(--bg-tertiary);
   color: var(--text-primary);
   border: 1px solid var(--border);
   border-radius: 6px;
   resize: vertical;
-  margin-bottom: 16px;
-  font-family: inherit;
-  font-size: 15px; /* Slightly larger font */
-  line-height: 1.5;
-  transition: all 0.2s ease;
+  font-size: 14px;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
 }
 
 #ai-prompt:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 2px rgba(137, 180, 250, 0.25);
+  box-shadow: 0 0 8px rgba(96, 165, 250, 0.4);
 }
 
+/* 🎨 Buttons */
 .button-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 10px;
 }
 
 .button-container button {
   flex: 1;
   min-width: 100px;
-  padding: 12px 16px; /* Larger padding */
+  padding: 14px;
   background-color: var(--accent);
   color: var(--bg-primary);
   border: none;
   border-radius: 6px;
   cursor: pointer;
   font-weight: 500;
-  font-size: 15px; /* Larger font */
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  font-size: 16px;
+  transition: background 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
 }
 
 .button-container button:hover {
   background-color: var(--accent-hover);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
 }
 
 .button-container button:active {
   transform: translateY(0);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-/* AI Response Area */
+/* 📜 AI Response */
 .ai-response-container {
-  padding: 16px;
+  padding: 20px;
   flex: 1;
   overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-}
-
-.ai-response-container h3 {
-  margin-top: 0;
-  margin-bottom: 12px;
-  font-size: 16px;
-  font-weight: 500;
-  color: var(--text-primary);
+  background-color: var(--bg-tertiary);
+  border-left: 1px solid var(--border);
+  border-radius: 6px;
 }
 
 #ai-response {
-  background-color: var(--bg-tertiary);
+  background-color: var(--bg-secondary);
   border: 1px solid var(--border);
   border-radius: 6px;
   padding: 16px;
-  flex: 1;
-  overflow-y: auto;
-  font-size: 15px;
-  line-height: 1.5;
+  font-size: 14px;
+  line-height: 1.6;
   white-space: pre-wrap;
   color: var(--text-primary);
 }
 
-/* Editor Section */
+/* 🖥️ Editor */
 .editor-container {
   flex: 1;
   display: flex;
@@ -196,56 +166,25 @@ body, html {
 }
 
 .editor-header {
-  padding: 12px 16px;
+  padding: 16px;
   background-color: var(--bg-tertiary);
   border-bottom: 1px solid var(--border);
-  font-size: 14px;
+  font-size: 15px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-#current-file {
-  color: var(--text-secondary);
-  font-size: 14px;
-}
-
-.editor-actions button {
-  padding: 10px 16px; /* Larger button */
-  background-color: var(--accent);
-  color: var(--bg-primary);
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 500;
-  font-size: 14px;
-  transition: all 0.2s ease;
-}
-
-.editor-actions button:hover {
-  background-color: var(--accent-hover);
-  transform: translateY(-1px);
-}
-
-.editor-actions button:active {
-  transform: translateY(0);
-}
-
+/* 🖊️ Monaco Editor */
 #editor {
   flex: 1;
-  min-height: 500px; /* Ensure minimum height for editor */
+  min-height: 500px;
+  border-radius: 6px;
 }
 
-/* Make sure the Monaco editor is visible and large enough */
-.monaco-editor {
-  width: 100% !important;
-  height: 100% !important;
-}
-
-/* Custom Scrollbar */
+/* 📌 Scrollbar */
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
@@ -255,67 +194,24 @@ body, html {
 ::-webkit-scrollbar-thumb {
   background-color: var(--bg-tertiary);
   border-radius: 20px;
-  border: 2px solid var(--bg-secondary);
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-secondary);
 }
 
-/* Responsive Adjustments */
+/* 📱 Mobile Friendly */
 @media (max-width: 768px) {
   .container {
     flex-direction: column;
   }
-  
+
   .sidebar {
     width: 100%;
     max-height: 50vh;
   }
-}
 
-/* Monaco Editor Overrides */
-.monaco-editor .margin {
-  background-color: var(--bg-secondary) !important;
-}
-
-/* Loading State */
-.loading {
-  opacity: 0.7;
-  pointer-events: none;
-}
-
-/* Error Message */
-.error-message {
-  color: var(--danger);
-  padding: 8px;
-  border-left: 3px solid var(--danger);
-  background-color: rgba(243, 139, 168, 0.1);
-  margin-bottom: 12px;
-}
-
-/* Success Message */
-.success-message {
-  color: var(--success);
-  padding: 8px;
-  border-left: 3px solid var(--success);
-  background-color: rgba(166, 227, 161, 0.1);
-  margin-bottom: 12px;
-}
-
-/* Specific fixes for the current structure */
-textarea {
-  min-height: 180px !important;
-  font-size: 15px !important;
-}
-
-input[type="text"], 
-input[type="password"] {
-  padding: 10px !important;
-  font-size: 14px !important;
-}
-
-button {
-  padding: 12px 16px !important;
-  font-size: 15px !important;
+  .button-container {
+    flex-direction: column;
+  }
 }
