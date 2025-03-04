@@ -3,8 +3,8 @@ console.log('app.js is loading');
 let monacoInstance;
 let editor;
 
-// Dynamically Load Monaco Editor
-function loadMonaco() {
+// Load Monaco Editor
+async function loadMonaco() {
   return new Promise((resolve, reject) => {
     if (window.monaco) {
       resolve(window.monaco);
@@ -25,7 +25,7 @@ function loadMonaco() {
   });
 }
 
-// Initialize Monaco Editor
+// Initialize Editor
 async function initEditor() {
   console.log('Initializing Monaco Editor...');
   try {
@@ -52,7 +52,7 @@ async function initEditor() {
   }
 }
 
-// Set Up Event Listeners
+// Set Up Event Listeners for All Buttons
 function setupEventListeners() {
   console.log('Setting up event listeners');
 
@@ -72,6 +72,7 @@ function setupEventListeners() {
   });
 }
 
+// Handle Button Clicks
 function handleButtonClick(action) {
   console.log(`${action} button clicked`);
   if (action === 'download') {
@@ -81,7 +82,7 @@ function handleButtonClick(action) {
   }
 }
 
-// Call AI API
+// Ask AI Function (Handles Ask, Explain, Complete)
 async function askAI(mode) {
   console.log(`askAI called with mode: ${mode}`);
 
@@ -96,9 +97,14 @@ async function askAI(mode) {
     const promptElement = document.getElementById('ai-prompt');
     let prompt = promptElement?.value || '';
 
-    if (mode === 'explain' && !prompt) prompt = 'Explain the following code:';
-    else if (mode === 'complete' && !prompt) prompt = 'Complete the following code:';
-    else if (!prompt) prompt = 'Analyze this code and provide suggestions:';
+    // Modify Prompt Based on Button Clicked
+    if (mode === 'explain') {
+      prompt = `Explain the following JavaScript code in detail:\n\n${code}`;
+    } else if (mode === 'complete') {
+      prompt = `Complete the following JavaScript code:\n\n${code}`;
+    } else {
+      prompt = `Analyze this JavaScript code and provide insights:\n\n${code}`;
+    }
 
     updateAIResponse('Thinking...');
 
@@ -124,7 +130,7 @@ async function askAI(mode) {
   }
 }
 
-// Update AI Response Text
+// Update AI Response
 function updateAIResponse(text) {
   const responseElement = document.getElementById('ai-response');
   if (!responseElement) {
@@ -134,7 +140,7 @@ function updateAIResponse(text) {
   responseElement.textContent = text;
 }
 
-// Download Code
+// Download Code as a File
 function downloadCode() {
   try {
     const code = editor.getValue();
@@ -153,7 +159,7 @@ function downloadCode() {
   }
 }
 
-// Change Language Based on File Extension
+// Change Monaco Language Based on File Extension
 function changeLanguage(filename) {
   try {
     if (!filename) return;
@@ -169,5 +175,5 @@ function changeLanguage(filename) {
   }
 }
 
-// Start the editor
+// Initialize the editor on page load
 initEditor();
