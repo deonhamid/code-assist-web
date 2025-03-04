@@ -6,7 +6,7 @@ const axios = require('axios'); // ✅ Import axios
 require('dotenv').config(); // ✅ Load .env variables
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = 10000;
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -43,7 +43,7 @@ app.post('/ask-ai', async (req, res) => {
       }
     );
 
-    // ✅ Send AI response to frontend
+    
     res.json({ response: response.data.completion });
   } catch (error) {
     console.error("API Error:", error.response ? error.response.data : error.message);
@@ -51,13 +51,11 @@ app.post('/ask-ai', async (req, res) => {
   }
 });
 
-// ✅ Handle 404 Errors
+
 app.use((req, res) => {
   res.status(404).json({ error: "Not Found" });
 });
 
-// ✅ Start the server
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`✅ Server running on port ${PORT}`);
+  console.log(`RENDER DEPLOYMENT: Server listening on port ${PORT}`);
 });
-
