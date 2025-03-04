@@ -1,177 +1,149 @@
-// File: public/app.js
 console.log('app.js is loading');
 
-let monaco;
+let monacoInstance;
 let editor;
 
-// Load Monaco Editor
-require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs' }});
-
-require(['vs/editor/editor.main'], function() {
-  console.log('Monaco modules loaded');
-  
-  try {
-    monaco = window.monaco;
-    if (!monaco) {
-      console.error('Monaco not available on window object');
+// Dynamically Load Monaco Editor
+function loadMonaco() {
+  return new Promise((resolve, reject) => {
+    if (window.monaco) {
+      resolve(window.monaco);
       return;
     }
-    
+
+    const monacoScript = document.createElement('script');
+    monacoScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs/loader.js';
+    monacoScript.onload = () => {
+      require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs' } });
+      require(['vs/editor/editor.main'], () => {
+        monacoInstance = window.monaco;
+        resolve(monacoInstance);
+      });
+    };
+    monacoScript.onerror = reject;
+    document.body.appendChild(monacoScript);
+  });
+}
+
+// Initialize Monaco Editor
+async function initEditor() {
+  console.log('Initializing Monaco Editor...');
+  try {
+    await loadMonaco();
     const editorElement = document.getElementById('editor');
+
     if (!editorElement) {
       console.error('Editor element not found');
       return;
     }
-    
-    // Create editor
-    editor = monaco.editor.create(editorElement, {
+
+    editor = monacoInstance.editor.create(editorElement, {
       value: '// Start coding here...',
       language: 'javascript',
       theme: 'vs-dark',
       automaticLayout: true,
-      minimap: {
-        enabled: true
-      }
+      minimap: { enabled: true }
     });
-    console.log('Editor created successfully');
-    
-    // Setup event listeners
+
+    console.log('Editor initialized successfully');
     setupEventListeners();
   } catch (error) {
-    console.error('Error initializing editor:', error);
-  }
-});
-
-function setupEventListeners() {
-  console.log('Setting up event listeners');
-  
-  try {
-    // Check if elements exist
-    const askButton = document.getElementById('ask-button');
-    const explainButton = document.getElementById('explain-button');
-    const completeButton = document.getElementById('complete-button');
-    const downloadButton = document.getElementById('download-button');
-    
-    if (!askButton) console.error('ask-button element not found');
-    if (!explainButton) console.error('explain-button element not found');
-    if (!completeButton) console.error('complete-button element not found');
-    if (!downloadButton) console.error('download-button element not found');
-    
-    // AI interactions
-    if (askButton) {
-      askButton.addEventListener('click', () => {
-        console.log('Ask button clicked');
-        askAI('general');
-      });
-    }
-    
-    if (explainButton) {
-      explainButton.addEventListener('click', () => {
-        console.log('Explain button clicked');
-        askAI('explain');
-      });
-    }
-    
-    if (completeButton) {
-      completeButton.addEventListener('click', () => {
-        console.log('Complete button clicked');
-        askAI('complete');
-      });
-    }
-    
-    // Download file
-    if (downloadButton) {
-      downloadButton.addEventListener('click', () => {
-        console.log('Download button clicked');
-        downloadCode();
-      });
-    }
-  } catch (error) {
-    console.error('Error setting up event listeners:', error);
+    console.error('Error loading Monaco:', error);
   }
 }
 
-async function askAI(mode) {
-  console.log(`askAI called with mode: ${mode}`);
-  
-  try {
-    const apiKeyElement = document.getElementById('api-key');
-    if (!apiKeyElement) {
-      console.error('api-key element not found');
+// Set Up Event Listeners
+function setupEventListeners() {
+  console.log('Setting up event listeners');
+
+  const buttons = {
+    ask: document.getElementById('ask-button'),
+    explain: document.getElementById('explain-button'),
+    complete: document.getElementById('complete-button'),
+    download: document.getElementById('download-button')
+  };
+
+  Object.entries(buttons).forEach(([name, button]) => {
+    if (!button) {
+      console.warn(`${name}-button not found`);
       return;
     }
-    
-    const apiKey = apiKeyElement.value;
+    button.addEventListener('click', () => handleButtonClick(name));
+  });
+}
+
+function handleButtonClick(action) {
+  console.log(`${action} button clicked`);
+  if (action === 'download') {
+    downloadCode();
+  } else {
+    askAI(action);
+  }
+}
+
+// Call AI API
+async function askAI(mode) {
+  console.log(`askAI called with mode: ${mode}`);
+
+  try {
+    const apiKey = document.getElementById('api-key')?.value;
     if (!apiKey) {
       updateAIResponse('Please enter your API key first.');
       return;
     }
-    
+
     const code = editor.getValue();
-    
     const promptElement = document.getElementById('ai-prompt');
-    if (!promptElement) {
-      console.error('ai-prompt element not found');
-      return;
-    }
-    
-    let prompt = promptElement.value;
-    
-    if (mode === 'explain' && !prompt) {
-      prompt = 'Explain the following code in detail:';
-    } else if (mode === 'complete' && !prompt) {
-      prompt = 'Complete the following code:';
-    } else if (!prompt) {
-      prompt = 'Analyze the following code and provide suggestions:';
-    }
-    
+    let prompt = promptElement?.value || '';
+
+    if (mode === 'explain' && !prompt) prompt = 'Explain the following code:';
+    else if (mode === 'complete' && !prompt) prompt = 'Complete the following code:';
+    else if (!prompt) prompt = 'Analyze this code and provide suggestions:';
+
     updateAIResponse('Thinking...');
-    
+
     console.log('Making API request...');
-    const response = await fetch('/api/ask-ai', {
+    const response = await fetch('/ask-ai', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ prompt, code, apiKey })
     });
-    
+
     console.log('API response received');
     const data = await response.json();
+
     if (data.error) {
-      console.error('API returned error:', data.error);
+      console.error('API error:', data.error);
       updateAIResponse(`Error: ${data.error}`);
     } else {
       updateAIResponse(data.response);
     }
   } catch (error) {
-    console.error('Error in askAI function:', error);
+    console.error('Error in askAI:', error);
     updateAIResponse(`Error: ${error.message}`);
   }
 }
 
+// Update AI Response Text
 function updateAIResponse(text) {
-  try {
-    const responseElement = document.getElementById('ai-response');
-    if (!responseElement) {
-      console.error('ai-response element not found');
-      return;
-    }
-    responseElement.textContent = text;
-  } catch (error) {
-    console.error('Error updating AI response:', error);
+  const responseElement = document.getElementById('ai-response');
+  if (!responseElement) {
+    console.error('ai-response element not found');
+    return;
   }
+  responseElement.textContent = text;
 }
 
+// Download Code
 function downloadCode() {
   try {
     const code = editor.getValue();
     const blob = new Blob([code], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
-    
+
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'code.js'; // Default filename
+    a.download = 'code.js';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -181,25 +153,21 @@ function downloadCode() {
   }
 }
 
-// Change language based on file extension
+// Change Language Based on File Extension
 function changeLanguage(filename) {
   try {
     if (!filename) return;
-    
     const extension = filename.split('.').pop();
     const languageMap = {
-      'js': 'javascript',
-      'py': 'python',
-      'html': 'html',
-      'css': 'css',
-      'json': 'json',
-      'md': 'markdown',
-      'txt': 'plaintext'
+      'js': 'javascript', 'py': 'python', 'html': 'html', 'css': 'css',
+      'json': 'json', 'md': 'markdown', 'txt': 'plaintext'
     };
-    
     const language = languageMap[extension] || 'plaintext';
-    monaco.editor.setModelLanguage(editor.getModel(), language);
+    monacoInstance.editor.setModelLanguage(editor.getModel(), language);
   } catch (error) {
     console.error('Error changing language:', error);
   }
 }
+
+// Start the editor
+initEditor();
