@@ -1,0 +1,121 @@
+// File: public/app.js
+let monaco;
+let editor;
+
+// Load Monaco Editor
+require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs' }});
+require(['vs/editor/editor.main'], function() {
+  monaco = window.monaco;
+  
+  // Create editor
+  editor = monaco.editor.create(document.getElementById('editor'), {
+    value: '// Start coding here...',
+    language: 'javascript',
+    theme: 'vs-dark',
+    automaticLayout: true,
+    minimap: {
+      enabled: true
+    }
+  });
+
+  // Setup event listeners
+  setupEventListeners();
+});
+
+function setupEventListeners() {
+  // AI interactions
+  document.getElementById('ask-button').addEventListener('click', () => {
+    askAI('general');
+  });
+
+  document.getElementById('explain-button').addEventListener('click', () => {
+    askAI('explain');
+  });
+
+  document.getElementById('complete-button').addEventListener('click', () => {
+    askAI('complete');
+  });
+
+  // Download file
+  document.getElementById('download-button').addEventListener('click', () => {
+    downloadCode();
+  });
+}
+
+async function askAI(mode) {
+  const apiKey = document.getElementById('api-key').value;
+  if (!apiKey) {
+    updateAIResponse('Please enter your API key first.');
+    return;
+  }
+
+  const code = editor.getValue();
+  let prompt = document.getElementById('ai-prompt').value;
+  
+  if (mode === 'explain' && !prompt) {
+    prompt = 'Explain the following code in detail:';
+  } else if (mode === 'complete' && !prompt) {
+    prompt = 'Complete the following code:';
+  } else if (!prompt) {
+    prompt = 'Analyze the following code and provide suggestions:';
+  }
+
+  updateAIResponse('Thinking...');
+  
+  try {
+    const response = await fetch('/api/ask-ai', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ prompt, code, apiKey })
+    });
+    
+    const data = await response.json();
+    if (data.error) {
+      updateAIResponse(`Error: ${data.error}`);
+    } else {
+      updateAIResponse(data.response);
+    }
+  } catch (error) {
+    updateAIResponse(`Error: ${error.message}`);
+  }
+}
+
+function updateAIResponse(text) {
+  const responseElement = document.getElementById('ai-response');
+  responseElement.textContent = text;
+}
+
+function downloadCode() {
+  const code = editor.getValue();
+  const blob = new Blob([code], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'code.js'; // Default filename
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// Change language based on file extension
+function changeLanguage(filename) {
+  if (!filename) return;
+  
+  const extension = filename.split('.').pop();
+  const languageMap = {
+    'js': 'javascript',
+    'py': 'python',
+    'html': 'html',
+    'css': 'css',
+    'json': 'json',
+    'md': 'markdown',
+    'txt': 'plaintext'
+  };
+  
+  const language = languageMap[extension] || 'plaintext';
+  monaco.editor.setModelLanguage(editor.getModel(), language);
+}
