@@ -9,9 +9,11 @@ const PORT = 10000; //
 
 app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
-
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`RENDER DEPLOYMENT: Server listening on port ${PORT}`);
