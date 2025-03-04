@@ -1,10 +1,17 @@
 const express = require('express');
-const app = express();
-const PORT = parseInt(process.env.PORT || '10000', 10);
+const bodyParser = require('body-parser');
+const axios = require('axios');
+const cors = require('cors');
+const path = require('path');
 
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-});
+const app = express();
+const PORT = 10000; //
+
+app.use(cors());
+app.use(bodyParser.json());
+app.use(express.static('public'));
+
+
 
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`RENDER DEPLOYMENT: Server listening on port ${PORT}`);
