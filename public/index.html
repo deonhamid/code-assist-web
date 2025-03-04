@@ -1,11 +1,47 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>CodeAssist Web</title>
+  <meta charset="UTF-8">
+  <title>CodeAssist Web - AI-Powered Code Editor</title>
   <link rel="stylesheet" href="styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs/loader.js"></script>
 </head>
 <body>
-  <div class="container">Loading...</div>
+  <div class="container">
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <h2>CodeAssist Web</h2>
+      </div>
+      <div class="ai-controls">
+        <h3>AI Assistant</h3>
+        <div class="api-key-container">
+          <label for="api-key">API Key:</label>
+          <input type="password" id="api-key" placeholder="Enter your API key">
+          <small>Your API key is only sent to the AI service and never stored</small>
+        </div>
+        <textarea id="ai-prompt" placeholder="Ask the AI something about your code..."></textarea>
+        <div class="button-container">
+          <button id="ask-button">Ask AI</button>
+          <button id="explain-button">Explain Code</button>
+          <button id="complete-button">Complete Code</button>
+        </div>
+      </div>
+      <div class="ai-response-container">
+        <h3>AI Response</h3>
+        <div id="ai-response"></div>
+      </div>
+    </div>
+    <div class="editor-container">
+      <div class="editor-header">
+        <span id="current-file">Untitled</span>
+        <div class="editor-actions">
+          <button id="download-button">Download Code</button>
+        </div>
+      </div>
+      <div id="editor"></div>
+    </div>
+  </div>
+
   <script src="app.js"></script>
 </body>
 </html>
