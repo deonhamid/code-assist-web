@@ -31,7 +31,7 @@ body, html {
 
 /* Sidebar Styling */
 .sidebar {
-  width: 320px;
+  width: 360px;
   background-color: var(--bg-secondary);
   border-right: 1px solid var(--border);
   display: flex;
@@ -105,8 +105,8 @@ body, html {
 
 #ai-prompt {
   width: 100%;
-  height: 120px;
-  padding: 10px;
+  height: 180px; /* Increased height */
+  padding: 12px;
   background-color: var(--bg-tertiary);
   color: var(--text-primary);
   border: 1px solid var(--border);
@@ -114,7 +114,8 @@ body, html {
   resize: vertical;
   margin-bottom: 16px;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 15px; /* Slightly larger font */
+  line-height: 1.5;
   transition: all 0.2s ease;
 }
 
@@ -133,13 +134,14 @@ body, html {
 .button-container button {
   flex: 1;
   min-width: 100px;
-  padding: 10px 12px;
+  padding: 12px 16px; /* Larger padding */
   background-color: var(--accent);
   color: var(--bg-primary);
   border: none;
   border-radius: 6px;
   cursor: pointer;
   font-weight: 500;
+  font-size: 15px; /* Larger font */
   transition: all 0.2s ease;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
@@ -179,7 +181,7 @@ body, html {
   padding: 16px;
   flex: 1;
   overflow-y: auto;
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1.5;
   white-space: pre-wrap;
   color: var(--text-primary);
@@ -209,13 +211,14 @@ body, html {
 }
 
 .editor-actions button {
-  padding: 8px 12px;
+  padding: 10px 16px; /* Larger button */
   background-color: var(--accent);
   color: var(--bg-primary);
   border: none;
   border-radius: 6px;
   cursor: pointer;
   font-weight: 500;
+  font-size: 14px;
   transition: all 0.2s ease;
 }
 
@@ -230,12 +233,19 @@ body, html {
 
 #editor {
   flex: 1;
+  min-height: 500px; /* Ensure minimum height for editor */
+}
+
+/* Make sure the Monaco editor is visible and large enough */
+.monaco-editor {
+  width: 100% !important;
+  height: 100% !important;
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
 }
 
 ::-webkit-scrollbar-track {
@@ -291,4 +301,21 @@ body, html {
   border-left: 3px solid var(--success);
   background-color: rgba(166, 227, 161, 0.1);
   margin-bottom: 12px;
+}
+
+/* Specific fixes for the current structure */
+textarea {
+  min-height: 180px !important;
+  font-size: 15px !important;
+}
+
+input[type="text"], 
+input[type="password"] {
+  padding: 10px !important;
+  font-size: 14px !important;
+}
+
+button {
+  padding: 12px 16px !important;
+  font-size: 15px !important;
 }
